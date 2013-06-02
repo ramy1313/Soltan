@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
 from members.forms import MemberForm
+from soltan import settings
 
 def detail(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
@@ -13,11 +14,11 @@ def detail(request, member_id):
 
 def print_member(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
-	return render_to_response('members/print_member.html', {'member': m})
+	return render_to_response('members/print_member.html', {'member': m, 'MEDIA_URL': settings.MEDIA_URL})
 
 def add_member(request):
 	if request.method == 'POST':
-		form = MemberForm(request.POST)
+		form = MemberForm(request.POST, request.FILES)
 		if form.is_valid():
 			m = form.save()
 			return HttpResponseRedirect(reverse('members.views.print_member', args=(m.membership_id,)))

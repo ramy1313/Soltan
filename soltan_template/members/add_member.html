@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}ﺇﺿﺎﻓﺔ ﻋﻀﻮ{% endblock %}
+{% block content_title %}إستمارة عضوية{% endblock %}
+{% block title_desc %}برجاء إضافة البيانات المطلوبة{% endblock %}
+{% block content %}
+<form action="/members/add_member/" method="post" enctype="multipart/form-data">{% csrf_token %}
+	<table cellpadding="10">
+		{{ form.as_table }}
+	</table>
+	<input type="submit" value="ﺣﻔﻆ ﻭﻃﺒﺎﻋﺔ" />
+</form>
+{% endblock %}

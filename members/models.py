@@ -21,7 +21,7 @@ class Member(models.Model):
     membership_type = models.CharField("ﻧﻮﻉ اﻟﻌﻀﻮﻳﺔ", max_length = 1, choices = MEMBERSHIP_TYPE)
     create_date = models.DateField("ﺗﺤﺮﻳﺮا ﻓﻰ", auto_now_add = True)
     modified_date = models.DateField("ﺗﺎﺭﻳﺦ اﻟﺘﻌﺪﻳﻞ", auto_now = True)
-    personal_image = models.ImageField("ﺻﻮﺭﺓ ﺷﺨﺼﻴﺔ", upload_to = '/image', blank = True, null= True)
+    personal_image = models.ImageField("ﺻﻮﺭﺓ ﺷﺨﺼﻴﺔ", upload_to = 'image', blank = True, null= True)
     membership_id = models.AutoField("ﺭﻗﻢ اﻟﻌﻀﻮﻳﺔ", primary_key = True)
 
     def __unicode__(self):
