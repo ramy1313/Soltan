@@ -28,7 +28,12 @@ class Member(models.Model):
         return str(self.membership_id)
 
     def get_last_paid(self):
-        r = self.receipt_set.latest('current_date')
+        try:
+            r = self.receipt_set.latest('current_date')
+        except:
+            return 1
+        if r.rec_type == 'P':
+            return 0
         return r.create_date.year
 
     

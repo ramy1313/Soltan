@@ -2,7 +2,10 @@
 {% load i18n %}
 {% block title %}الأعضاء{% endblock %}
 {% block content_title %}الأعضاء{% endblock %}
-{% block title_desc %}<a href="/members/add_member/">إضافة عضو</a>{% endblock %}
+{% block title_desc %}
+    <a href="/members/add_member/">إضافة عضو</a><br/>
+    <p>عدد الاعضاء: {{mcount}}</p>
+{% endblock %}
 {% block content %}
 {% if members_list %}
     <table>
@@ -23,6 +26,21 @@
     	    </tr>
     	{% endfor %}
     </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if members_list.has_previous %}
+                <a href="?page={{ members_list.previous_page_number }}">السابق</a>
+            {% endif %}
+
+            <span class="current">
+                صفحة {{ members_list.number }} من {{ members_list.paginator.num_pages }}.
+            </span>
+
+            {% if members_list.has_next %}
+                <a href="?page={{ members_list.next_page_number }}">التالى</a>
+            {% endif %}
+        </span>
+    </div>
 {% else %}
     <p>عفوا لايوجد أعضاء</p>
 {% endif %}
