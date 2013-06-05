@@ -7,6 +7,10 @@ from django.template import RequestContext
 from members.forms import MemberForm
 from soltan import settings
 
+def index(request):
+	members_list = Member.objects.all().order_by('-create_date')
+	return render_to_response('members/index.html', {'members_list': members_list})
+
 def detail(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()

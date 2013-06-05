@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block title %}الأعضاء{% endblock %}
+{% block content_title %}الأعضاء{% endblock %}
+{% block title_desc %}<a href="/members/add_member/">إضافة عضو</a>{% endblock %}
+{% block content %}
+{% if members_list %}
+    <table>
+    	<tr>
+    		<th>رقم العضوية</th>
+    		<th>الأسم</th>
+    		<th>نوع العضوية</th>
+    		<th>تاريخ العضوية</th>
+    		<th>أخر تعديل</th>
+    	</tr>
+    	{% for member in members_list %}
+    	    <tr>
+    	    	<td>{{ member.membership_id }}</td>
+    	    	<td><a href="/members/{{member.membership_id}}/">{{ member.name }}</a></td>
+    	    	<td>{{ member.get_membership_type_display }}</td>
+    	    	<td>{{ member.create_date.year }}</td>
+    	    	<td>{{ member.modified_date }}</td>
+    	    </tr>
+    	{% endfor %}
+    </table>
+{% else %}
+    <p>عفوا لايوجد أعضاء</p>
+{% endif %}
+{% endblock %}
+
