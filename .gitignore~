@@ -1,7 +1,0 @@
-*.pyc
-settings.py
-*.pyc
-*/settings.py
-.project
-.pydevproject
-.settings/*
