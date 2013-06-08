@@ -55,7 +55,7 @@ def pay_receipt(request, membership_id):
 		l = m.get_last_paid()
 		if l == 0 or l == 1:
 			l = timezone.now().year
-		n = timezone.now().year - l + 1
+		n = timezone.now().year - l
 		form = ReceiptForm({'member': membership_id, 'last_paid_year': l, 'number_of_years': n})
 	return render(request, 'members/pay_receipt.html', {
         'form': form,
