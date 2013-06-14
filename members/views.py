@@ -7,6 +7,7 @@ from django.template import RequestContext
 from members.forms import MemberForm, ReceiptForm
 from soltan import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import timezone
 
 
 def index(request):
@@ -20,12 +21,12 @@ def index(request):
 		members_list_page = paginator.page(1)
 	except EmptyPage:
 		members_list_page = paginator.page(paginator.num_pages)
-	return render_to_response('members/index.html', {'members_list': members_list_page, 'mcount': n})
+	return render_to_response('members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
 
 def detail(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
-	return render_to_response('members/detail.html', {'member': m, 'last_paid': last_paid})
+	return render_to_response('members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year})
 
 def print_member(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
@@ -48,9 +49,14 @@ def pay_receipt(request, membership_id):
 		form = ReceiptForm(request.POST)
 		if form.is_valid():
 			r = form.save()
-			return HttpResponseRedirect(reverse('members.views.add_member', args=(membership_id,)))
+			return HttpResponseRedirect(reverse('members.views.detail', args=(membership_id,)))
 	else:
-		form = ReceiptForm({'member': membership_id, 'rec_type': 'Y'})
+		m = get_object_or_404(Member, pk = membership_id)
+		l = m.get_last_paid()
+		if l == 0 or l == 1:
+			l = timezone.now().year
+		n = timezone.now().year - l
+		form = ReceiptForm({'member': membership_id, 'last_paid_year': l, 'number_of_years': n})
 	return render(request, 'members/pay_receipt.html', {
         'form': form,
         'membership_id': membership_id,

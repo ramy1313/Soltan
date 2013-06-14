@@ -32,9 +32,7 @@ class Member(models.Model):
             r = self.receipt_set.latest('current_date')
         except:
             return 1
-        if r.rec_type == 'P':
-            return 0
-        return r.create_date.year
+        return r.current_date.year
 
     
 class Receipt(models.Model):
@@ -44,8 +42,8 @@ class Receipt(models.Model):
         ('Y', "ﺭﺳﻮﻡ ﺃﺷﺘﺮاﻙ ﺳﻨﻮﻳﺔ"),
         ('P', "ﺭﺳﻮﻡ ﺃﺷﺘﺮاﻙ اﻟﻌﻀﻮﻳﺔ"),
     )
-    rec_type = models.CharField("ﻧﻮﻉ اﻹﻳﺼﺎﻝ", max_length = 1, choices = REC_TYPE)
-    current_date = models.DateField("اﻟﺘﺎﺭﻳﺦ", auto_now_add = True)
+    rec_type = models.CharField("ﻧﻮﻉ اﻹﻳﺼﺎﻝ", max_length = 1, choices = REC_TYPE, blank = False, null = False)
+    current_date = models.DateTimeField("اﻟﺘﺎﺭﻳﺦ", auto_now_add = True)
     number_of_years = models.IntegerField("ﻋﺪﺩ اﻟﺴﻨﻴﻦ ﻣﺴﺘﺤﻘﺔ اﻟﺪﻓﻊ", default = 1, blank = True, null = True)
     last_paid_year = models.IntegerField("ﻣﻦ", blank = True, null = True)
     #current_year = models.IntegerField("ﺇﻟﻰ", default = date.today().year, blank = True, null = True)

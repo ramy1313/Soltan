@@ -15,6 +15,7 @@
     		<th>نوع العضوية</th>
     		<th>تاريخ العضوية</th>
     		<th>أخر تعديل</th>
+            <th>الأشتراك السنوى</th>
     	</tr>
     	{% for member in members_list %}
     	    <tr>
@@ -23,6 +24,13 @@
     	    	<td>{{ member.get_membership_type_display }}</td>
     	    	<td>{{ member.create_date.year }}</td>
     	    	<td>{{ member.modified_date }}</td>
+                <td>
+                    {% if member.get_last_paid == now %}
+                        تسديد
+                    {% else %}
+                        <a href="/members/{{ member.membership_id }}/pay_receipt/">تسديد</a>
+                    {% endif %}
+                </td>
     	    </tr>
     	{% endfor %}
     </table>
