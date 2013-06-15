@@ -1,18 +1,39 @@
+{% load staticfiles %}
 <!DOCTYPE html>
-<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<html lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %} dir="rtl" {% endif %}>
 <head>
-<title>{% block title %}{% endblock %}</title>
-{% block extrastyle %}{% endblock %}
-{% block extrahead %}{% endblock %}
+	<title>{% block title %}{% endblock %}</title>
+    <!-- Bootstrap -->
+    <link href="{% static "css/bootstrap.css"%}" rel="stylesheet" media="screen">
+    {% if LANGUAGE_BIDI %}
+    <link href="{% static "css/bootstrap.rtl.css"%}" rel="stylesheet" media="screen">
+    {% endif %}
+    {% block extrastyle %}{% endblock %}
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="{% static "js/bootstrap.js"%}"></script>
+    {% block extrahead %}{% endblock %}
 </head>
-{% load i18n %}
+
 
 <body>
-
-	<div>
-		<h1>{% block content_title %}{% endblock %}</h1>
-		<h3>{% block title_desc %}{% endblock %}</h3>
-		{% block content %}{% endblock %}
+	<div class="page-header">
+	    <h1>{% block content_title %}{% endblock %}</h1>
+	    <h3>{% block title_desc %}{% endblock %}</h3>
+    </div>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span2">
+		        <ul class="nav nav-list">
+			        <li class="nav-header">خدمات الأعضاء</li>
+                    <li class="{% block member_list_nav %}{% endblock %}"><a href="/members/">قائمة الأعضاء</a></li>
+			        <li class="{% block add_member_nav %}{% endblock %}"><a href="/members/add_member/">إضافة عضو</a></li>
+			        <li class="divider"></li>
+		        </ul>
+		    </div>
+		    <div class="span10">
+		        {% block content %}{% endblock %}
+		    </div>
+		</div>
 	</div>
 
 </body>

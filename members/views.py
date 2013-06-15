@@ -11,6 +11,7 @@ from django.utils import timezone
 
 
 def index(request):
+	#print request.LANGUAGE_CODE
 	members_list = Member.objects.all().order_by('-create_date')
 	paginator = Paginator(members_list, 5)
 	n = members_list.count
@@ -21,18 +22,19 @@ def index(request):
 		members_list_page = paginator.page(1)
 	except EmptyPage:
 		members_list_page = paginator.page(paginator.num_pages)
-	return render_to_response('members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
+	return render(request, 'members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
 
 def detail(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
-	return render_to_response('members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year})
+	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year})
 
 def print_member(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
-	return render_to_response('members/print_member.html', {'member': m, 'MEDIA_URL': settings.MEDIA_URL})
+	return render(request, 'members/print_member.html', {'member': m,})
 
 def add_member(request):
+	#print request.LANGUAGE_CODE
 	if request.method == 'POST':
 		form = MemberForm(request.POST, request.FILES)
 		if form.is_valid():

@@ -1,22 +1,25 @@
 {% extends "base.html" %}
-{% load i18n %}
 {% block title %}الأعضاء{% endblock %}
 {% block content_title %}الأعضاء{% endblock %}
 {% block title_desc %}
     <a href="/members/add_member/">إضافة عضو</a><br/>
     <p>عدد الاعضاء: {{mcount}}</p>
 {% endblock %}
+{% block member_list_nav %}active{% endblock %}
 {% block content %}
 {% if members_list %}
-    <table>
-    	<tr>
-    		<th>رقم العضوية</th>
-    		<th>الأسم</th>
-    		<th>نوع العضوية</th>
-    		<th>تاريخ العضوية</th>
-    		<th>أخر تعديل</th>
-            <th>الأشتراك السنوى</th>
-    	</tr>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>رقم العضوية</th>
+    		    <th>الأسم</th>
+    		    <th>نوع العضوية</th>
+    		    <th>تاريخ العضوية</th>
+    		    <th>أخر تعديل</th>
+                <th>الأشتراك السنوى</th>
+    	    </tr>
+        </thead>
+        <tbody>
     	{% for member in members_list %}
     	    <tr>
     	    	<td>{{ member.membership_id }}</td>
@@ -33,20 +36,19 @@
                 </td>
     	    </tr>
     	{% endfor %}
+        </tbody>
     </table>
-    <div class="pagination">
-        <span class="step-links">
-            {% if members_list.has_previous %}
-                <a href="?page={{ members_list.previous_page_number }}">السابق</a>
-            {% endif %}
+    <div class="pager">
+        <span class="{% if not members_list.has_previous %}disabled {% endif %}previous">
+            <a href="?page={{ members_list.previous_page_number }}">السابق &larr;</a>
+        </span>
 
-            <span class="current">
-                صفحة {{ members_list.number }} من {{ members_list.paginator.num_pages }}.
-            </span>
+        <span class="current">
+        صفحة {{ members_list.number }} من {{ members_list.paginator.num_pages }}.
+        </span>
 
-            {% if members_list.has_next %}
-                <a href="?page={{ members_list.next_page_number }}">التالى</a>
-            {% endif %}
+        <span class="{% if not members_list.has_next %}disabled {% endif %}next">
+            <a href="?page={{ members_list.next_page_number }}">التالى</a>
         </span>
     </div>
 {% else %}

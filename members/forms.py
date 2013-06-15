@@ -1,6 +1,7 @@
 from members.models import Member, Receipt
 from django.forms import ModelForm
 from django.forms.fields import TextInput
+from django.forms.forms import BoundField
 
 class MemberForm(ModelForm):
 	class Meta:
@@ -37,3 +38,27 @@ class ReceiptForm(ModelForm):
 		return r
 		
 
+def decorate_label_tag(f):
+ 
+    def bootstrap_label_tag(self, contents=None, attrs=None):
+        attrs = attrs or {}
+        add_class(attrs, 'control-label')
+        return f(self, contents, attrs)
+ 
+    return bootstrap_label_tag
+ 
+ 
+BoundField.label_tag = decorate_label_tag(
+         BoundField.label_tag)
+ 
+ 
+def add_class(attrs, html_class):
+    assert type(attrs) is dict
+ 
+    if 'class' in attrs:
+        classes = attrs['class'].split()
+        if not html_class in classes:
+            classes.append(html_class)
+            attrs['class'] = ' '.join(classes)
+    else:
+        attrs['class'] = html_class
