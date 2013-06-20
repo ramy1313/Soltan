@@ -24,10 +24,10 @@ def index(request):
 		members_list_page = paginator.page(paginator.num_pages)
 	return render(request, 'members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
 
-def detail(request, member_id):
+def detail(request, member_id, print_rec = 0):
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
-	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year})
+	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year, 'print_rec': print_rec})
 
 def print_member(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
@@ -39,7 +39,7 @@ def add_member(request):
 		form = MemberForm(request.POST, request.FILES)
 		if form.is_valid():
 			m = form.save()
-			return HttpResponseRedirect(reverse('members.views.print_member', args=(m.membership_id,)))
+			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id, 'print_rec': 1}))
 	else:
 		form = MemberForm()
 	return render(request, 'members/add_member.html', {

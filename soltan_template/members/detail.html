@@ -1,23 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
 {% if now == last_paid %}
-    <p>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</p>
+    <p class="alert alert-success"><strong>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</strong></p>
 {% else %}
-    <a href="/members/{{ member.membership_id }}/pay_receipt/">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
+    <a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn btn-warning">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
 {% endif %}
-<ul>
- <li>{{member.membership_id}}</li>
- <li>{{member.name}}</li>
- <li>{{member.job}}</li>
- <li>{{member.national_number}}</li>
- <li>{{member.get_membership_type_display}}</li>
- <li>{{member.birth_date}}</li>
- <li>{{member.birth_place}}</li>
- <li>{{member.create_date}}</li>
- <li>{{member.modified_date}}</li>
- {% if last_paid == 0 %}
-     <li>ﻟﻢ ﻳﺴﺪﺩ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</li>
- {% elif last_paid == 1 %}
-     <li>ﻫﺬا اﻟﻌﻀﻮ ﻟﻢ ﻳﻘﻢ ﺑﺘﺴﺪﻳﺪ ﺃﻯ ﺇﻳﺼﺎﻝ</li>
- {% else %}
-     <li>{{ last_paid }}</li>
- {% endif %}
-</ul>
+<img style="float:left" src = "/{{ member.personal_image }}" alt = "صورة شخصية" class="img-polaroid">
+<table cellpadding="7" class="table-hover">
+	<tbody>
+	    <tr>
+		    <td>رقم العضوية</td>
+		    <td>{{ member.membership_id }}</td>
+	    </tr>
+	    <tr>
+		    <td>الأسم</td>
+		    <td>{{ member.name }}</td>
+	    </tr>
+	    <tr>
+		    <td>نوع العضوية</td>
+		    <td>{{ member.get_membership_type_display }}</td>
+	    </tr>
+	    <tr>
+		    <td>الوظيفة</td>
+		    <td>{{ member.job }}</td>
+	    </tr>
+	    <tr>
+		    <td>الرقم القومى</td>
+		    <td>{{ member.national_number }}</td>
+	    </tr>
+	    <tr>
+		    <td>تاريخ الميلاد</td>
+		    <td>{{ member.birth_date }}</td>
+	    </tr>
+	    <tr>
+		    <td>محل الميلاد</td>
+		    <td>{{ member.birth_place }}</td>
+	    </tr>
+	    <tr>
+		    <td>تاريخ أخر سداد</td>
+		    {% if last_paid == 0 %}
+                <td class="text-error">ﻟﻢ ﻳﺴﺪﺩ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</td>
+            {% elif last_paid == 1 %}
+                <td class="text-error">ﻫﺬا اﻟﻌﻀﻮ ﻟﻢ ﻳﻘﻢ ﺑﺘﺴﺪﻳﺪ ﺃﻯ ﺇﻳﺼﺎﻝ</td>
+            {% else %}
+                <td {% if now != last_paid %}class="text-warning"{% else %}class="text-success"{% endif %}>{{ last_paid }}</td>
+            {% endif %}
+	    </tr>
+	    <tr>
+		    <td>تاريخ العضوية</td>
+		    <td>{{ member.create_date }}</td>
+		</tr>
+		<tr>
+			<td>تاريخ التعديل</td>
+			<td>{{ member.modified_date }}</td>
+		</tr>
+	</tbody>
+</table>
+{% if print_rec %}
+   {% include "members/print_member.html" %}
+   <script>
+        $('#myModal').modal('show')
+   </script>
+{% endif %}
+{% endblock %}

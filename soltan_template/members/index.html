@@ -28,11 +28,7 @@
     	    	<td>{{ member.create_date.year }}</td>
     	    	<td>{{ member.modified_date }}</td>
                 <td>
-                    {% if member.get_last_paid == now %}
-                        تسديد
-                    {% else %}
-                        <a href="/members/{{ member.membership_id }}/pay_receipt/">تسديد</a>
-                    {% endif %}
+                    <a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn {% if member.get_last_paid == now %}disabled {% else %}btn-warning{% endif %}">تسديد</a>
                 </td>
     	    </tr>
     	{% endfor %}

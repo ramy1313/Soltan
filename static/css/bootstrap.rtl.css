@@ -5626,3 +5626,19 @@ a.badge:hover {
 .affix {
   position: fixed;
 }
+
+.page-header .container{
+  width: 1170px;
+}
+
+.footer {
+    background-color: #F5F5F5;
+    border-top: 1px solid #E5E5E5;
+    margin-top: 70px;
+    padding: 30px 0;
+    text-align: center;
+}
+
+.hidden-field{
+  padding-top: 5px;
+}

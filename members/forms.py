@@ -2,11 +2,18 @@ from members.models import Member, Receipt
 from django.forms import ModelForm
 from django.forms.fields import TextInput
 from django.forms.forms import BoundField
+from django.forms.widgets import HiddenInput
+from django import forms 
+
 
 class MemberForm(ModelForm):
 	class Meta:
 		model = Member
 		fields = ['name', 'membership_id', 'membership_type', 'address', 'national_number', 'job', 'birth_date', 'birth_place', 'tel', 'mobile', 'personal_image']
+		widgets = {
+		'birth_date': forms.DateInput(format='%Y-%m-%d', attrs={'class':'datePicker', 'readonly':'true'}),
+		}
+		
 
 	def save(self, commit = True):
 		m = super(MemberForm, self).save(commit = False)
@@ -24,10 +31,9 @@ class ReceiptForm(ModelForm):
 
 	def __init__(self, *args, **kwargs):
 		super(ReceiptForm, self).__init__(*args, **kwargs)
-		self.fields['member'].widget = TextInput(attrs={'size':'10'})
-		self.fields['member'].widget.attrs['readonly'] = True
-		self.fields['last_paid_year'].widget.attrs['readonly'] = True
-		self.fields['number_of_years'].widget.attrs['readonly'] = True
+		self.fields['member'].widget = HiddenInput()
+		self.fields['last_paid_year'].widget = HiddenInput()
+		self.fields['number_of_years'].widget = HiddenInput()
 		
 
 	def save(self, commit = True):

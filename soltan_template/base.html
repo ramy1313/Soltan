@@ -11,15 +11,18 @@
     {% block extrastyle %}{% endblock %}
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="{% static "js/bootstrap.js"%}"></script>
+    {% block extrascript %}{% endblock %}
     {% block extrahead %}{% endblock %}
 </head>
 
 
 <body>
-	<div class="page-header">
-	    <h1>{% block content_title %}{% endblock %}</h1>
-	    <h3>{% block title_desc %}{% endblock %}</h3>
-    </div>
+	<header class="page-header">
+		<div class="container">
+	        <h1>{% block content_title %}{% endblock %}</h1>
+	        <p class="lead">{% block title_desc %}{% endblock %}</p>
+	    </div>
+    </header>
 	<div class="container-fluid">
 		<div class="row-fluid">
 			<div class="span2">
@@ -35,6 +38,11 @@
 		    </div>
 		</div>
 	</div>
+	<footer class="footer">
+		<div class="container">
+			<p>built by</p>
+		</div>
+	</footer>
 
 </body>
 
