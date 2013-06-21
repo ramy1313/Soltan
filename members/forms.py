@@ -19,8 +19,9 @@ class MemberForm(ModelForm):
 		m = super(MemberForm, self).save(commit = False)
 		if commit:
 			m.save()
-		m.receipt_set.create(rec_type = 'P')
-		m.receipt_set.create(rec_type = 'Y', number_of_years= 1)
+		if m.get_last_paid() == 1:
+			m.receipt_set.create(rec_type = 'P')
+			m.receipt_set.create(rec_type = 'Y', number_of_years= 1)
 		return m
 
 

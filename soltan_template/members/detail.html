@@ -1,9 +1,15 @@
 {% extends "base.html" %}
+{% block extrascript %}{% endblock %}
 {% block content %}
+{% if print_rec and success %}
+    <p class="alert alert-success"><strong>تم إضافة العضو بنجاح</strong></p>
+{% elif success %}
+    <p class="alert alert-success"><strong>تم تعديل البيانات بنجاح</strong></p>
+{% endif %}
 {% if now == last_paid %}
-    <p class="alert alert-success"><strong>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</strong></p>
+   	<p class="alert alert-success"><strong>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</strong></p>
 {% else %}
-    <a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn btn-warning">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
+   	<a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn btn-warning">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
 {% endif %}
 <img style="float:left" src = "/{{ member.personal_image }}" alt = "صورة شخصية" class="img-polaroid">
 <table cellpadding="7" class="table-hover">
@@ -56,10 +62,13 @@
 		</tr>
 	</tbody>
 </table>
+<p>
+	<a href="/members/{{ member.membership_id }}/edit_member/" class="btn btn-info">تعديل بيانات</a>
+</p>
 {% if print_rec %}
-   {% include "members/print_member.html" %}
-   <script>
+    {% include "members/print_member.html" %}
+    <script>
         $('#myModal').modal('show')
-   </script>
+    </script>
 {% endif %}
 {% endblock %}

@@ -9,7 +9,7 @@ class Member(models.Model):
     name = models.CharField("اﻷﺳﻢ ﺑﺎﻟﻜﺎﻣﻞ", max_length = 200)
     job = models.CharField("اﻟﻮﻇﻴﻔﺔ", max_length = 100)
     address = models.CharField("اﻟﻌﻨﻮاﻥ", max_length = 100)
-    national_number = models.CharField("اﻟﺮﻗﻢ اﻟﻘﻮﻣﻰ", max_length = 14, validators = [validators.RegexValidator(r'^[0-9]$', 'يسمح فقط بالأرقام من 0-9', 'Invalid Number'), validators.MinLengthValidator(14)])
+    national_number = models.CharField("اﻟﺮﻗﻢ اﻟﻘﻮﻣﻰ", max_length = 14, validators = [validators.RegexValidator(r'^[0-9]*$', 'يسمح فقط بالأرقام من 0-9', 'Invalid Number'), validators.MinLengthValidator(14)])
     birth_date = models.DateField("ﺗﺎﺭﻳﺦ اﻟﻤﻴﻼﺩ")
     birth_place = models.CharField("ﺟﻬﺔ اﻟﻤﻴﻼﺩ", max_length = 50, blank = True)
     tel = models.CharField("اﻟﺘﻠﻴﻔﻮﻥ", max_length = 25, blank = True, validators = [validators.RegexValidator(r'^\+?[0-9]*$', 'يسمح فقط بالأرقام من 0-9 أو +', 'Invalid Number'), validators.MinLengthValidator(7)])
