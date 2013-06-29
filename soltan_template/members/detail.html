@@ -1,10 +1,19 @@
 {% extends "base.html" %}
-{% block extrascript %}{% endblock %}
+{% block extrascript %}
+	<script>
+		$(document).ready(function(){
+        	$('#myModal').modal('show')
+        });
+    </script>
+{% endblock %}
 {% block content %}
-{% if print_rec and success %}
-    <p class="alert alert-success"><strong>تم إضافة العضو بنجاح</strong></p>
-{% elif success %}
-    <p class="alert alert-success"><strong>تم تعديل البيانات بنجاح</strong></p>
+{% if messages %}
+    {% for message in messages %}
+    	<p class="alert alert-success">{{ message }}</p>
+    	{% if 'printDia' in message.tags %}
+    		{% include "members/print_member.html" %}
+    	{% endif %}
+    {% endfor %}
 {% endif %}
 {% if now == last_paid %}
    	<p class="alert alert-success"><strong>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</strong></p>
@@ -62,13 +71,9 @@
 		</tr>
 	</tbody>
 </table>
+{% include "members/delete_button.html" %}
 <p>
 	<a href="/members/{{ member.membership_id }}/edit_member/" class="btn btn-info">تعديل بيانات</a>
+	<a href="#deleteModal" role="button" class="btn btn-danger" data-toggle="modal">حذف العضو</a>
 </p>
-{% if print_rec %}
-    {% include "members/print_member.html" %}
-    <script>
-        $('#myModal').modal('show')
-    </script>
-{% endif %}
 {% endblock %}

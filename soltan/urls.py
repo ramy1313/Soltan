@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 import settings
 from django.conf.urls.static import static
+from django.views.generic.simple import direct_to_template
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -11,8 +12,6 @@ admin.autodiscover()
 urlpatterns = patterns('members.views',
     url(r'^members/$', 'index'),
     url(r'^members/(?P<member_id>\d+)/$', 'detail'),
-    url(r'^members/(?P<member_id>\d+)/(?P<success>\d+)/$', 'detail'),
-    url(r'^members/(?P<member_id>\d+)/(?P<success>\d+)/(?P<print_rec>\d+)/$', 'detail'),
     url(r'^members/(?P<member_id>\d+)/print_member/$', 'print_member'),
     url(r'^members/add_member/$', 'add_member'),
     url(r'^members/(?P<membership_id>\d+)/pay_receipt/$', 'pay_receipt'),
@@ -28,6 +27,7 @@ urlpatterns += patterns('',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Uncomment the next line to enable the admin:
+    url(r'^$', direct_to_template, {"template": "home.html"}),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 )

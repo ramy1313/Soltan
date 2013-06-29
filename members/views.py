@@ -8,6 +8,8 @@ from members.forms import MemberForm, ReceiptForm
 from soltan import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
+from django.contrib.auth import authenticate, login
+from django.contrib import messages
 
 
 def index(request):
@@ -23,10 +25,10 @@ def index(request):
 		members_list_page = paginator.page(paginator.num_pages)
 	return render(request, 'members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
 
-def detail(request, member_id, print_rec = 0, success = 0):
+def detail(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
-	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year, 'print_rec': print_rec, 'success': success})
+	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year,})
 
 def print_member(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
@@ -37,7 +39,8 @@ def add_member(request):
 		form = MemberForm(request.POST, request.FILES)
 		if form.is_valid():
 			m = form.save()
-			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id, 'print_rec': 1, 'success': 1}))
+			messages.success(request, 'Profile details updated.', extra_tags = 'printDia')
+			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id,}))
 	else:
 		form = MemberForm()
 	return render(request, 'members/add_member.html', {
@@ -50,7 +53,8 @@ def edit_member(request, member_id):
 		form = MemberForm(request.POST, request.FILES, instance = member_before_edit)
 		if form.is_valid():
 			m = form.save()
-			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id, 'success': 1}))
+			messages.success(request, 'Profile details updated.',)
+			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id,}))
 	else:
 		form = MemberForm(instance = member_before_edit)
 	return render(request, 'members/add_member.html', {
@@ -76,3 +80,9 @@ def pay_receipt(request, membership_id):
         'form': form,
         'membership_id': membership_id,
     })
+
+def deactivate(request, member_id):
+	pass
+
+def soltan_login(request):
+	pass

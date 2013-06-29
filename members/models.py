@@ -19,11 +19,12 @@ class Member(models.Model):
         ('A', "ﻋﺎﻣﻞ"),
         ('H', "ﻓﺨﺮﻯ"),
     )
-    membership_type = models.CharField("ﻧﻮﻉ اﻟﻌﻀﻮﻳﺔ", max_length = 1, choices = MEMBERSHIP_TYPE, blank= False, null = False)
+    membership_type = models.CharField("ﻧﻮﻉ اﻟﻌﻀﻮﻳﺔ", max_length = 1, choices = MEMBERSHIP_TYPE, blank = False, null = False)
     create_date = models.DateField("ﺗﺤﺮﻳﺮا ﻓﻰ", auto_now_add = True)
     modified_date = models.DateField("ﺗﺎﺭﻳﺦ اﻟﺘﻌﺪﻳﻞ", auto_now = True)
     personal_image = models.ImageField("ﺻﻮﺭﺓ ﺷﺨﺼﻴﺔ", upload_to = 'image', blank = True, null= True)
     membership_id = models.AutoField("ﺭﻗﻢ اﻟﻌﻀﻮﻳﺔ", primary_key = True)
+    deactivated = models.BooleanField("غير مفعل", default = False)
 
     def __unicode__(self):
         return str(self.membership_id)
