@@ -1,5 +1,5 @@
 # Create your views here.
-from django.shortcuts import render_to_response, get_object_or_404, render
+from django.shortcuts import render_to_response, get_object_or_404, render, redirect
 from members.models import Member, Receipt
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
@@ -13,6 +13,8 @@ from django.contrib import messages
 
 
 def index(request):
+	if request.user.is_anonymous():
+		return redirect('/')
 	members_list = Member.objects.all().order_by('-create_date')
 	paginator = Paginator(members_list, 5)
 	n = members_list.count
@@ -26,15 +28,21 @@ def index(request):
 	return render(request, 'members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
 
 def detail(request, member_id):
+	if request.user.is_anonymous():
+		return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
 	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year,})
 
 def print_member(request, member_id):
+	if request.user.is_anonymous():
+		return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	return render(request, 'members/print_member.html', {'member': m,})
 
 def add_member(request):
+	if request.user.is_anonymous():
+		return redirect('/')
 	if request.method == 'POST':
 		form = MemberForm(request.POST, request.FILES)
 		if form.is_valid():
@@ -48,6 +56,8 @@ def add_member(request):
     })
 
 def edit_member(request, member_id):
+	if request.user.is_anonymous():
+		return redirect('/')
 	member_before_edit = get_object_or_404(Member, pk = member_id)
 	if request.method == 'POST':
 		form = MemberForm(request.POST, request.FILES, instance = member_before_edit)
@@ -64,6 +74,8 @@ def edit_member(request, member_id):
     })
 
 def pay_receipt(request, membership_id):
+	if request.user.is_anonymous():
+		return redirect('/')
 	if request.method == 'POST':
 		form = ReceiptForm(request.POST)
 		if form.is_valid():
@@ -82,7 +94,11 @@ def pay_receipt(request, membership_id):
     })
 
 def deactivate(request, member_id):
-	pass
+	if request.user.is_anonymous():
+		return redirect('/')
+	m = get_object_or_404(Member, pk = membership_id)
+	m.deactivated = True
+	m.save()
+	return HttpResponseRedirect(reverse('members.views.detail', args=(membership_id,)))
 
-def soltan_login(request):
-	pass
+

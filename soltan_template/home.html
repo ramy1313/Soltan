@@ -1,1 +1,28 @@
 {% extends "base.html" %}
+{% block content %}
+	{% if messages %}
+    	{% for message in messages %}
+    		<p class="alert alert-{{ message.tags }}">{{ message }}</p>
+    	{% endfor %}
+	{% endif %}
+	{% if user.is_authenticated %}
+		<p>Welcome user</p>
+		<a href="/logout/" class="btn">تسجيل خروج</a>
+	{% else %}
+		<form action="/login/" method="post" class="form-horizontal">{% csrf_token %}
+			<div class="control-group">
+				<label class="control-label">أسم المستخدم:</label>
+				<div class="controls">
+					<input type="text" name="username"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label">الرقم السرى:</label>
+				<div class="controls">
+					<input type="password" name="password"/>
+				</div>
+			</div>
+			<input type="submit" value="تسجيل الدخول" />
+		</form>
+	{% endif %}
+{% endblock %}
