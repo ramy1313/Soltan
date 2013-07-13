@@ -72,8 +72,12 @@
 	</tbody>
 </table>
 {% include "members/delete_button.html" %}
+{% url members.views.edit_member member.membership_id as next %}
+{% with cssid='checkPasswordEdit' %}
+{% include "soltan_login/check_password.html" %}
+{% endwith %}
 <p>
-	<a href="/members/{{ member.membership_id }}/edit_member/" class="btn btn-info">تعديل بيانات</a>
+	<a href="#checkPasswordEdit" role="button" class="btn btn-info" data-toggle="modal">تعديل بيانات</a>
 	<a href="#deleteModal" role="button" class="btn btn-danger" data-toggle="modal">حذف العضو</a>
 </p>
 {% endblock %}

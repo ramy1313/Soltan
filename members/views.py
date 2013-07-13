@@ -58,8 +58,12 @@ def add_member(request):
 def edit_member(request, member_id):
 	if request.user.is_anonymous():
 		return redirect('/')
+	if request.method == 'POST' and 'checkpass' in request.POST:
+		if not request.user.check_password(request.POST['password']):
+			messages.error(request, 'Profile details deactivated.',)
+			return redirect('/')
 	member_before_edit = get_object_or_404(Member, pk = member_id)
-	if request.method == 'POST':
+	if request.method == 'POST' and 'memForm' in request.POST:
 		form = MemberForm(request.POST, request.FILES, instance = member_before_edit)
 		if form.is_valid():
 			m = form.save()
@@ -96,9 +100,23 @@ def pay_receipt(request, membership_id):
 def deactivate(request, member_id):
 	if request.user.is_anonymous():
 		return redirect('/')
-	m = get_object_or_404(Member, pk = membership_id)
+	m = get_object_or_404(Member, pk = member_id)
 	m.deactivated = True
 	m.save()
+	messages.success(request, 'Profile details deactivated.',)
 	return HttpResponseRedirect(reverse('members.views.detail', args=(membership_id,)))
+
+def delete_member(request, member_id):
+	if request.user.is_anonymous():
+		messages.error(request, 'Profile details deactivated.',)
+		return redirect('/')
+	if request.method == 'POST':
+		if not request.user.check_password(request.POST['password']):
+			messages.error(request, 'Profile details deactivated.',)
+			return redirect('/')
+	m = get_object_or_404(Member, pk = member_id)
+	m.delete()
+	messages.success(request, 'deleted.',)
+	return redirect('/')
 
 

@@ -7,6 +7,7 @@ from django import forms
 
 
 class MemberForm(ModelForm):
+	memForm = forms.BooleanField(widget=forms.HiddenInput(), initial=True)
 	class Meta:
 		model = Member
 		fields = ['name', 'membership_id', 'membership_type', 'address', 'national_number', 'job', 'birth_date', 'birth_place', 'tel', 'mobile', 'personal_image']

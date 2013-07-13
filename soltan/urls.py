@@ -16,6 +16,8 @@ urlpatterns = patterns('members.views',
     url(r'^members/add_member/$', 'add_member'),
     url(r'^members/(?P<membership_id>\d+)/pay_receipt/$', 'pay_receipt'),
     url(r'^members/(?P<member_id>\d+)/edit_member/$', 'edit_member'),
+    url(r'^members/(?P<member_id>\d+)/delete_member/$', 'delete_member'),
+    url(r'^members/(?P<member_id>\d+)/deactivate/$', 'deactivate'),
 )
 
 urlpatterns += patterns('',
