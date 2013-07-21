@@ -1,8 +1,19 @@
 {% extends "base.html" %}
+{% load staticfiles %}
+{% block extrastyle %}
+	<link href="{% static "css/print.css"%}" rel="stylesheet" media="print">
+{% endblock %}
 {% block extrascript %}
 	<script>
 		$(document).ready(function(){
-        	$('#myModal').modal('show')
+        	$('#myModal').modal('show');
+        });
+        $(document).ready(function(){
+        	$('#printButton').click(function(){
+        		$('#printTable').css("display","block");
+        		$('#printThis').css("display","none");
+        		window.print();
+        	});
         });
     </script>
 {% endblock %}
@@ -11,7 +22,9 @@
     {% for message in messages %}
     	<p class="alert alert-success">{{ message }}</p>
     	{% if 'printDia' in message.tags %}
-    		{% include "members/print_member.html" %}
+    		{% with rec=member.get_create_rec  %}
+    			{% include "members/print_member.html" %}
+    	    {% endwith %}
     	{% endif %}
     {% endfor %}
 {% endif %}
@@ -21,7 +34,7 @@
    	<a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn btn-warning">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
 {% endif %}
 <img style="float:left" src = "/{{ member.personal_image }}" alt = "صورة شخصية" class="img-polaroid">
-<table cellpadding="7" class="table-hover">
+<table cellpadding="7" class="table-hover" id="printTable">
 	<tbody>
 	    <tr>
 		    <td>رقم العضوية</td>
@@ -79,5 +92,6 @@
 <p>
 	<a href="#checkPasswordEdit" role="button" class="btn btn-info" data-toggle="modal">تعديل بيانات</a>
 	<a href="#deleteModal" role="button" class="btn btn-danger" data-toggle="modal">حذف العضو</a>
+	<button class="btn btn-primary" id="printButton">طباعة</button>
 </p>
 {% endblock %}

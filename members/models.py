@@ -36,6 +36,11 @@ class Member(models.Model):
             return 1
         return r.current_date.year
 
+    def get_create_rec(self):
+        if self.receipt_set.count() == 2:
+            return self.receipt_set.all()
+        return Member.objects.none()
+
     
 class Receipt(models.Model):
     member = models.ForeignKey(Member)

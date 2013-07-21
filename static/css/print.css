@@ -1,0 +1,7 @@
+header, footer, p, img, .span2, .modal-header, .modal-footer, .modal, .span10 > table {
+	display: none;
+}
+
+#printThis {
+	display: block;
+}
