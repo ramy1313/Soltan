@@ -31,6 +31,7 @@
 			        <li class="nav-header">خدمات الأعضاء</li>
                     <li class="{% block member_list_nav %}{% endblock %}"><a href="/members/">قائمة الأعضاء</a></li>
 			        <li class="{% block add_member_nav %}{% endblock %}"><a href="/members/add_member/">إضافة عضو</a></li>
+			        <li class="{% block Q_member_search_nav %}{% endblock %}"><a href="/members/Q_member_search/">بحث سريع</a></li>
 			        <li class="divider"></li>
 			        {% if user.is_authenticated %}
 			        <li class="nav-header">انت الان مفعل <br/>

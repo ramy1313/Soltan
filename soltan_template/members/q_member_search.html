@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}بحث سريع{% endblock %}
+{% block content_title %}بحث سريع{% endblock %}
+{% block title_desc %}أدخل رقنم العضو للوصول للعضو او رقم الإيصال للوصول للإيصال{% endblock %}
+{% block Q_member_search_nav %}active disabled{% endblock %}
+{% block content %}
+	<form action="/members/Q_member_search/" method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+		{% for field in form.visible_fields %}
+	    	<div class="control-group {%if field.errors%}error{%endif%}">
+        		{{ field.label_tag }}
+            	<div class="controls">
+                	{{field}}
+                	<span class="help-inline">{{field.errors}}</span>
+            	</div>
+        	</div>
+    	{% endfor %}
+    	<input type="submit" value="أبحث عن العضو"/>
+	</form>
+	<form action="/members/Q_member_search/" method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+		{% for field in form1.visible_fields %}
+	    	<div class="control-group {%if field.errors%}error{%endif%}">
+        		{{ field.label_tag }}
+            	<div class="controls">
+                	{{field}}
+                	<span class="help-inline">{{field.errors}}</span>
+            	</div>
+        	</div>
+    	{% endfor %}
+    	<input type="submit" value="أبحث عن الإيصال"/>
+	</form>
+{% endblock %}

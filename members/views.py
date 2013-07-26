@@ -4,7 +4,7 @@ from members.models import Member, Receipt, MemberFees
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from members.forms import MemberForm, ReceiptForm, MemberFeeForm
+from members.forms import MemberForm, ReceiptForm, MemberFeeForm, MemberSearchForm, RecSearchForm
 from soltan import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
@@ -196,3 +196,27 @@ def del_rec(request, rec_id):
 	r.delete()
 	messages.success(request, 'deleted.',)
 	return HttpResponseRedirect(reverse('members.views.detail', args=(m_id,)))
+
+def q_member_search(request):
+	if request.user.is_anonymous():
+		messages.error(request, 'Profile details deactivated.',)
+		return redirect('/')
+	if request.method == 'POST':
+		if request.POST.get('membersearch'):
+			form = MemberSearchForm(request.POST)
+			form1 = RecSearchForm()
+			if form.is_valid():
+				return HttpResponseRedirect(reverse('members.views.detail', args=(request.POST.get('membersearch'),)))
+		elif request.POST.get('recsearch'):
+			form1 = RecSearchForm(request.POST)
+			form = MemberSearchForm()
+			if form1.is_valid():
+				return HttpResponseRedirect(reverse('members.views.rec_detail', args=(request.POST.get('recsearch'),)))
+	else:
+		form = MemberSearchForm()
+		form1 = RecSearchForm()
+	return render(request,'members/q_member_search.html', {
+		'form': form,
+		'form1': form1,
+	})
+

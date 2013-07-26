@@ -1,5 +1,5 @@
 from members.models import Member, Receipt, MemberFees
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from django.forms.fields import TextInput
 from django.forms.forms import BoundField
 from django.forms.widgets import HiddenInput
@@ -58,6 +58,12 @@ class MemberFeeForm(ModelForm):
 		if commit:
 			f.save()
 		return f
+
+class MemberSearchForm(Form):
+	membersearch = forms.IntegerField()
+
+class RecSearchForm(Form):
+	recsearch = forms.IntegerField()
 		
 
 def decorate_label_tag(f):
