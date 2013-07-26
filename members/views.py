@@ -1,10 +1,10 @@
 # Create your views here.
 from django.shortcuts import render_to_response, get_object_or_404, render, redirect
-from members.models import Member, Receipt
+from members.models import Member, Receipt, MemberFees
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import RequestContext
-from members.forms import MemberForm, ReceiptForm
+from members.forms import MemberForm, ReceiptForm, MemberFeeForm
 from soltan import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
@@ -43,12 +43,6 @@ def detail(request, member_id):
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
 	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year,})
-
-def print_member(request, member_id):
-	if request.user.is_anonymous():
-		return redirect('/')
-	m = get_object_or_404(Member, pk = member_id)
-	return render(request, 'members/print_member.html', {'member': m,})
 
 def add_member(request):
 	if request.user.is_anonymous():
@@ -101,7 +95,8 @@ def pay_receipt(request, membership_id):
 		if l == 0 or l == 1:
 			l = timezone.now().year
 		n = timezone.now().year - l
-		form = ReceiptForm({'member': membership_id, 'last_paid_year': l, 'number_of_years': n})
+		amount = n * MemberFees.objects.latest('id').year_fee
+		form = ReceiptForm({'member': membership_id, 'last_paid_year': l, 'number_of_years': n, 'amount': amount})
 	return render(request, 'members/pay_receipt.html', {
         'form': form,
         'membership_id': membership_id,
@@ -114,6 +109,19 @@ def deactivate(request, member_id):
 	m.deactivated = True
 	m.save()
 	messages.success(request, 'Profile details deactivated.',)
+	return HttpResponseRedirect(reverse('members.views.detail', args=(member_id,)))
+
+def activate(request, member_id):
+	if request.user.is_anonymous():
+		return redirect('/')
+	if request.method == 'POST':
+		if not request.user.check_password(request.POST['password']):
+			messages.error(request, 'Profile details deactivated.',)
+			return redirect('/')
+	m = get_object_or_404(Member, pk = member_id)
+	m.deactivated = False
+	m.save()
+	messages.success(request, 'Profile details activated.',)
 	return HttpResponseRedirect(reverse('members.views.detail', args=(member_id,)))
 
 def delete_member(request, member_id):
@@ -129,4 +137,62 @@ def delete_member(request, member_id):
 	messages.success(request, 'deleted.',)
 	return redirect('/')
 
+def fee(request):
+	if request.user.is_anonymous():
+		messages.error(request, 'Profile details deactivated.',)
+		return redirect('/')
+	if request.method == 'POST':
+		if not request.user.check_password(request.POST['password']):
+			messages.error(request, 'Profile details deactivated.',)
+			return redirect('/')
+		form = MemberFeeForm(request.POST)
+		if form.is_valid():
+			r = form.save()
+			return redirect('/')
+	else:
+		form = MemberFeeForm({'regestration_fee': MemberFees.objects.latest('id').regestration_fee, 'year_fee': MemberFees.objects.latest('id').year_fee})
+	return render(request, 'members/fee.html', {
+        'form': form,
+    })
 
+def rec_list(request, member_id):
+	if request.user.is_anonymous():
+		messages.error(request, 'Profile details deactivated.',)
+		return redirect('/')
+	m = get_object_or_404(Member, pk = member_id)
+	rec_list = m.receipt_set.all()
+	paginator = Paginator(rec_list, 15)
+	n = rec_list.count
+	page = request.GET.get('page')
+	try:
+		rec_list_page = paginator.page(page)
+	except PageNotAnInteger:
+		rec_list_page = paginator.page(1)
+	except EmptyPage:
+		rec_list_page = paginator.page(paginator.num_pages)
+	return render(request, 'members/rec_list.html', {'rec_list': rec_list_page, 'rcount': n, 'name': m.name, 'm_id': member_id})
+
+def rec_detail(request, rec_id):
+	if request.user.is_anonymous():
+		messages.error(request, 'Profile details deactivated.',)
+		return redirect('/')
+	r = get_object_or_404(Receipt, pk = rec_id)
+	m = get_object_or_404(Member, pk = r.member.membership_id)
+	dele = False
+	if r.current_date == m.receipt_set.latest().current_date:
+		dele = True
+	return render(request, 'members/rec_detail.html', {'rec': r, 'dele': dele})
+
+def del_rec(request, rec_id):
+	if request.user.is_anonymous():
+		messages.error(request, 'Profile details deactivated.',)
+		return redirect('/')
+	if request.method == 'POST':
+		if not request.user.check_password(request.POST['password']):
+			messages.error(request, 'Profile details deactivated.',)
+			return redirect('/')
+	r = get_object_or_404(Receipt, pk = rec_id)
+	m_id = r.member.membership_id
+	r.delete()
+	messages.success(request, 'deleted.',)
+	return HttpResponseRedirect(reverse('members.views.detail', args=(m_id,)))

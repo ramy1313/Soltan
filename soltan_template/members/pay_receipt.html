@@ -1,5 +1,11 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n staticfiles %}
+{% block extrastyle %}
+    <style type="text/css" media="screen">
+        #printThis {display: none;}
+    </style>
+    <link href="{% static "css/print.css"%}" rel="stylesheet" media="print">
+{% endblock %}
 {% block title %}ﺇﺿﺎﻓﺔ ﻋﻀﻮ{% endblock %}
 {% block content_title %}إستمارة عضوية{% endblock %}
 {% block title_desc %}برجاء إضافة البيانات المطلوبة{% endblock %}
@@ -23,6 +29,14 @@
             </div>
         </div>
     {% endfor %}
-	<input type="submit" value="ﺣﻔﻆ ﻭﻃﺒﺎﻋﺔ" />
+	<input type="submit" value="ﺣﻔﻆ ﻭﻃﺒﺎﻋﺔ" onClick="window.print()"/>
 </form>
+<table id="printThis" cellpadding="7">
+    {% for hidden in form.hidden_fields %}
+        <tr>
+            <td>{{ hidden.label_tag }}</td>
+            <td>{{ hidden.value }}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}

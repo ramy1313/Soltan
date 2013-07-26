@@ -55,8 +55,16 @@ class Receipt(models.Model):
     last_paid_year = models.IntegerField("ﻣﻦ", blank = True, null = True)
     #current_year = models.IntegerField("ﺇﻟﻰ", default = date.today().year, blank = True, null = True)
 
+    class Meta:
+        get_latest_by = 'current_date'
+
     def __unicode__(self):
         return str(self.rec_number)
+
+
+class MemberFees(models.Model):
+    regestration_fee = models.IntegerField("رسوم التسجيل", blank = False, null = False)
+    year_fee = models.IntegerField("رسوم سنوية", blank = False, null = False)
 
     
     

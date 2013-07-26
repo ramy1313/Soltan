@@ -1,6 +1,6 @@
 {% url members.views.delete_member member.membership_id as next %}
 {% with cssid='checkPasswordDelete' %}
-{% include "soltan_login/check_password.html" %}
+  {% include "soltan_login/check_password.html" %}
 {% endwith %}
 <div id="deleteModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
   <div class="modal-header">
@@ -8,12 +8,16 @@
     <h3 id="myModalLabel">هل متاكد من رغبتك فى حذف العضو</h3>
   </div>
   <div class="modal-body">
-    <p class="alert alert-warning"><strong>إيقاف العضو يجعله عضو غير مفعله مع إمكانية مراجعة بياناته وأعادة تفعيلة فى وقت</strong></p>
+    {% if not member.deactivated %}
+      <p class="alert alert-warning"><strong>إيقاف العضو يجعله عضو غير مفعله مع إمكانية مراجعة بياناته وأعادة تفعيلة فى وقت</strong></p>
+    {% endif %}
     <p class="alert alert-error"><strong>حذف العضو يمسح بشكل نهائى كل بيانات العضو الإيصالات التى قام السيد العضو بسدادها بشكل نهائى من قواعد البيانات ولا يمكن ابدا العودة لها</strong></p>
   </div>
   <div class="modal-footer">
     <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <a href="/members/{{ member.membership_id }}/deactivate/" class="btn btn-warning">إيقاف</a>
+    {% if not member.deactivated %}
+      <a href="/members/{{ member.membership_id }}/deactivate/" class="btn btn-warning">إيقاف</a>
+    {% endif %}
     <a href="#checkPasswordDelete" class="btn btn-danger" data-dismiss="modal" aria-hidden="true" data-toggle="modal">حذف</a>
   </div>
 </div>

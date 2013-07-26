@@ -2,7 +2,6 @@
 {% block title %}الأعضاء{% endblock %}
 {% block content_title %}الأعضاء{% endblock %}
 {% block title_desc %}
-    <a href="/members/add_member/">إضافة عضو</a><br/>
     <p>عدد الاعضاء: {{mcount}}</p>
 {% endblock %}
 {% block member_list_nav %}active{% endblock %}
@@ -32,6 +31,7 @@
     		    <th>أخر تعديل</th>
                 {% if not deactive %}
                     <th>الأشتراك السنوى</th>
+                    <th>أخر سداد</th>
                 {% endif %}
     	    </tr>
         </thead>
@@ -47,6 +47,7 @@
                     <td>
                         <a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn {% if member.get_last_paid == now %}disabled {% else %}btn-warning{% endif %}">تسديد</a>
                     </td>
+                    <td>{{ member.get_last_paid }}</td>
                 {% endif %}
     	    </tr>
     	{% endfor %}

@@ -12,12 +12,16 @@ admin.autodiscover()
 urlpatterns = patterns('members.views',
     url(r'^members/$', 'index'),
     url(r'^members/(?P<member_id>\d+)/$', 'detail'),
-    url(r'^members/(?P<member_id>\d+)/print_member/$', 'print_member'),
     url(r'^members/add_member/$', 'add_member'),
+    url(r'^members/fee/$', 'fee'),
     url(r'^members/(?P<membership_id>\d+)/pay_receipt/$', 'pay_receipt'),
     url(r'^members/(?P<member_id>\d+)/edit_member/$', 'edit_member'),
     url(r'^members/(?P<member_id>\d+)/delete_member/$', 'delete_member'),
     url(r'^members/(?P<member_id>\d+)/deactivate/$', 'deactivate'),
+    url(r'^members/(?P<member_id>\d+)/activate/$', 'activate'),
+    url(r'^members/(?P<member_id>\d+)/rec_list/$', 'rec_list'),
+    url(r'^members/(?P<rec_id>\d+)/rec_detail/$', 'rec_detail'),
+    url(r'^members/(?P<rec_id>\d+)/del_rec/$', 'del_rec'),
 )
 
 urlpatterns += patterns('',

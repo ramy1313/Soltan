@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}إيصالات العضو {{ name }}{% endblock %}
+{% block content_title %}إيصالات العضو {{ name }}{% endblock %}
+{% block title_desc %}
+    <p>عدد الإيصالات: {{mcount}}</p>
+{% endblock %}
+{% block content %}
+	{% if rec_list %}
+		<table class="table table-hover">
+			<thead>
+				<tr>
+					<th>رقم الإيصال</th>
+					<th>نوع الإيصال</th>
+					<th>من</th>
+					<th>عدد السنوات</th>
+					<th>تاريخ السداد</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for rec in rec_list %}
+				<tr>
+					<td><a href="/members/{{ rec.rec_number }}/rec_detail/">{{ rec.rec_number }}</a></td>
+					<td>{{ rec.get_rec_type_display }}</td>
+					<td>{{ rec.last_paid_year }}</td>
+					<td>{{ rec.number_of_years }}</td>
+					<td>{{ rec.current_date }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="pager">
+        	<span class="{% if not rec_list.has_previous %}disabled {% endif %}previous">
+            	<a href="?page={{ rec_list.previous_page_number }}">السابق &larr;</a>
+        	</span>
+
+        	<span class="current">
+        		صفحة {{ rec_list.number }} من {{ rec_list.paginator.num_pages }}.
+        	</span>
+
+        	<span class="{% if not rec_list.has_next %}disabled {% endif %}next">
+            	<a href="?page={{ rec_list.next_page_number }}">التالى</a>
+        	</span>
+    	</div>
+    {% else %}
+    	<p>عفوا لا توجد غيصالات</p>
+    {% endif %}
+    <a href="/members/{{ m_id }}/" class="btn">العوده إلى صفحة العضو</a>
+{% endblock %}

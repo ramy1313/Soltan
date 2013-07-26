@@ -1,4 +1,4 @@
-from members.models import Member, Receipt
+from members.models import Member, Receipt, MemberFees
 from django.forms import ModelForm
 from django.forms.fields import TextInput
 from django.forms.forms import BoundField
@@ -27,6 +27,7 @@ class MemberForm(ModelForm):
 
 
 class ReceiptForm(ModelForm):
+	amount = forms.IntegerField(widget=forms.HiddenInput())
 	class Meta:
 		model = Receipt
 		fields = ['member', 'rec_number','number_of_years', 'last_paid_year']
@@ -44,6 +45,19 @@ class ReceiptForm(ModelForm):
 		if commit:
 			r.save()
 		return r
+
+class MemberFeeForm(ModelForm):
+	password = forms.CharField(widget=forms.PasswordInput())
+	class Meta:
+		model = MemberFees
+		fields = ['regestration_fee', 'year_fee']
+
+	def save(self, commit = True):
+		f = super(MemberFeeForm, self).save(commit = False)
+		MemberFees.objects.all().delete()
+		if commit:
+			f.save()
+		return f
 		
 
 def decorate_label_tag(f):

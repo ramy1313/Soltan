@@ -28,70 +28,93 @@
     	{% endif %}
     {% endfor %}
 {% endif %}
-{% if now == last_paid %}
-   	<p class="alert alert-success"><strong>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</strong></p>
-{% else %}
-   	<a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn btn-warning">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
-{% endif %}
-<img style="float:left" src = "/{{ member.personal_image }}" alt = "صورة شخصية" class="img-polaroid">
-<table cellpadding="7" class="table-hover" id="printTable">
-	<tbody>
-	    <tr>
-		    <td>رقم العضوية</td>
-		    <td>{{ member.membership_id }}</td>
-	    </tr>
-	    <tr>
-		    <td>الأسم</td>
-		    <td>{{ member.name }}</td>
-	    </tr>
-	    <tr>
-		    <td>نوع العضوية</td>
-		    <td>{{ member.get_membership_type_display }}</td>
-	    </tr>
-	    <tr>
-		    <td>الوظيفة</td>
-		    <td>{{ member.job }}</td>
-	    </tr>
-	    <tr>
-		    <td>الرقم القومى</td>
-		    <td>{{ member.national_number }}</td>
-	    </tr>
-	    <tr>
-		    <td>تاريخ الميلاد</td>
-		    <td>{{ member.birth_date }}</td>
-	    </tr>
-	    <tr>
-		    <td>محل الميلاد</td>
-		    <td>{{ member.birth_place }}</td>
-	    </tr>
-	    <tr>
-		    <td>تاريخ أخر سداد</td>
-		    {% if last_paid == 0 %}
-                <td class="text-error">ﻟﻢ ﻳﺴﺪﺩ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</td>
-            {% elif last_paid == 1 %}
-                <td class="text-error">ﻫﺬا اﻟﻌﻀﻮ ﻟﻢ ﻳﻘﻢ ﺑﺘﺴﺪﻳﺪ ﺃﻯ ﺇﻳﺼﺎﻝ</td>
-            {% else %}
-                <td {% if now != last_paid %}class="text-warning"{% else %}class="text-success"{% endif %}>{{ last_paid }}</td>
-            {% endif %}
-	    </tr>
-	    <tr>
-		    <td>تاريخ العضوية</td>
-		    <td>{{ member.create_date }}</td>
-		</tr>
-		<tr>
-			<td>تاريخ التعديل</td>
-			<td>{{ member.modified_date }}</td>
-		</tr>
-	</tbody>
-</table>
-{% include "members/delete_button.html" %}
-{% url members.views.edit_member member.membership_id as next %}
-{% with cssid='checkPasswordEdit' %}
-{% include "soltan_login/check_password.html" %}
-{% endwith %}
-<p>
-	<a href="#checkPasswordEdit" role="button" class="btn btn-info" data-toggle="modal">تعديل بيانات</a>
+{% if member.deactivated %}
+	<table>
+		<tbody cellpadding="7" class="table-hover">
+			<tr>
+		    	<td>رقم العضوية</td>
+		    	<td>{{ member.membership_id }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>الأسم</td>
+		    	<td>{{ member.name }}</td>
+	    	</tr>
+		</tbody>
+	</table>
+	{% include "members/delete_button.html" %}
+	{% url members.views.activate member.membership_id as next %}
+	{% with cssid='checkPasswordActive' %}
+  		{% include "soltan_login/check_password.html" %}
+	{% endwith %}
+	<a href="#checkPasswordActive" role="button" class="btn btn-success" data-toggle="modal">إعادة تفعيل</a>
 	<a href="#deleteModal" role="button" class="btn btn-danger" data-toggle="modal">حذف العضو</a>
-	<button class="btn btn-primary" id="printButton">طباعة</button>
-</p>
+{% else %}
+	{% if now == last_paid %}
+   		<p class="alert alert-success"><strong>ﺳﺪﺩ ﺟﻤﻴﻊ اﻟﺸﺘﺮاﻛﺎﺕ</strong></p>
+	{% else %}
+   		<a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn btn-warning">ﺩﻓﻊ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</a>
+	{% endif %}
+	<img style="float:left" src = "/{{ member.personal_image }}" alt = "صورة شخصية" class="img-polaroid">
+	<table cellpadding="7" class="table-hover" id="printTable">
+		<tbody>
+	    	<tr>
+		    	<td>رقم العضوية</td>
+		    	<td>{{ member.membership_id }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>الأسم</td>
+		    	<td>{{ member.name }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>نوع العضوية</td>
+		    	<td>{{ member.get_membership_type_display }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>الوظيفة</td>
+		    	<td>{{ member.job }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>الرقم القومى</td>
+		    	<td>{{ member.national_number }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>تاريخ الميلاد</td>
+		    	<td>{{ member.birth_date }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>محل الميلاد</td>
+		    	<td>{{ member.birth_place }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>تاريخ أخر سداد</td>
+		    	{% if last_paid == 0 %}
+                	<td class="text-error">ﻟﻢ ﻳﺴﺪﺩ اﻷﺷﺘﺮاﻙ اﻟﺴﻨﻮﻯ</td>
+            	{% elif last_paid == 1 %}
+                	<td class="text-error">ﻫﺬا اﻟﻌﻀﻮ ﻟﻢ ﻳﻘﻢ ﺑﺘﺴﺪﻳﺪ ﺃﻯ ﺇﻳﺼﺎﻝ</td>
+            	{% else %}
+                	<td {% if now != last_paid %}class="text-warning"{% else %}class="text-success"{% endif %}>{{ last_paid }}</td>
+            	{% endif %}
+	    	</tr>
+	    	<tr>
+		    	<td>تاريخ العضوية</td>
+		    	<td>{{ member.create_date }}</td>
+			</tr>
+			<tr>
+				<td>تاريخ التعديل</td>
+				<td>{{ member.modified_date }}</td>
+			</tr>
+		</tbody>
+	</table>
+	{% include "members/delete_button.html" %}
+	{% url members.views.edit_member member.membership_id as next %}
+	{% with cssid='checkPasswordEdit' %}
+		{% include "soltan_login/check_password.html" %}
+	{% endwith %}
+	<p>
+		<a href="#checkPasswordEdit" role="button" class="btn btn-info" data-toggle="modal">تعديل بيانات</a>
+		<a href="#deleteModal" role="button" class="btn btn-danger" data-toggle="modal">حذف العضو</a>
+		<a href="/members/{{ member.membership_id }}/rec_list/" class="btn btn-primary">عرض الإيصالات السابقة</a>
+		<button class="btn btn-primary" id="printButton">طباعة</button>
+	</p>
+{% endif %}
 {% endblock %}

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block extrastyle %}
+	<link href="{% static "css/print.css"%}" rel="stylesheet" media="print">
+{% endblock %}
+{% block content %}
+	<table cellpadding="7" class="table-hover" id="printThis">
+		<tbody>
+			<tr>
+				<td>رقم الإيصال</td>
+				<td>{{ rec.rec_number }}</td>
+			</tr>
+			<tr>
+				<td>نوع الإيصال</td>
+				<td>{{ rec.get_rec_type_display }}</td>
+			</tr>
+			<tr>
+				<td>من</td>
+				<td>{{ rec.last_paid_year }}</td>
+			</tr>
+			<tr>
+				<td>عدد السنين</td>
+				<td>{{ rec.number_of_years }}</td>
+			</tr>
+			<tr>
+				<td>تاريخ السداد</td>
+				<td>{{ rec.current_date }}</td>
+			</tr>
+		</tbody>
+	</table>
+	{% url members.views.del_rec rec.rec_number as next %}
+	{% with cssid='checkPasswordRecDel' %}
+		{% include "soltan_login/check_password.html" %}
+	{% endwith %}
+	<p>
+		<a href="/members/{{ rec.member.membership_id }}/" class="btn">العوده لصفحة العضو</a>
+		<a href="/members/{{ rec.member.membership_id }}/rec_list/" class="btn">العودة لقائمة إيصلات العضو</a>
+		{% if dele %}
+			<a href="#checkPasswordRecDel" role="button" class="btn btn-danger" data-toggle="modal">حذف الإيصال</a>
+		{% endif %}
+		<button class="btn btn-primary" onClick="window.print()">طباعه</button>
+	</p>
+{% endblock %}
