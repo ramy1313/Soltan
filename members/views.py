@@ -10,12 +10,22 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import timezone
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+from django.db.models import Max
 
 
 def index(request):
 	if request.user.is_anonymous():
 		return redirect('/')
-	members_list = Member.objects.all().order_by('-create_date')
+	deactive = False
+	since = 0
+	if request.GET.get('deactive'):
+		members_list = Member.objects.all().exclude(deactivated=False)
+		deactive = True
+	elif request.GET.get('since'):
+		members_list = Member.objects.select_related().exclude(deactivated=True).annotate(last_pyear=Max('receipt__current_date')).filter(last_pyear__lte=request.GET['since']+'-12-31 23:59:59').order_by('-receipt__current_date')
+		since = request.GET.get('since')
+	else:
+		members_list = Member.objects.all().exclude(deactivated=True)
 	paginator = Paginator(members_list, 5)
 	n = members_list.count
 	page = request.GET.get('page')
@@ -25,7 +35,7 @@ def index(request):
 		members_list_page = paginator.page(1)
 	except EmptyPage:
 		members_list_page = paginator.page(paginator.num_pages)
-	return render(request, 'members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year})
+	return render(request, 'members/index.html', {'members_list': members_list_page, 'mcount': n, 'now': timezone.now().year, 'deactive': deactive, 'loop_times': [-i for i in range(1,11)], 'since': since})
 
 def detail(request, member_id):
 	if request.user.is_anonymous():
@@ -104,7 +114,7 @@ def deactivate(request, member_id):
 	m.deactivated = True
 	m.save()
 	messages.success(request, 'Profile details deactivated.',)
-	return HttpResponseRedirect(reverse('members.views.detail', args=(membership_id,)))
+	return HttpResponseRedirect(reverse('members.views.detail', args=(member_id,)))
 
 def delete_member(request, member_id):
 	if request.user.is_anonymous():

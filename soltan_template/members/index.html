@@ -7,6 +7,20 @@
 {% endblock %}
 {% block member_list_nav %}active{% endblock %}
 {% block content %}
+<form action="/members/" method="get">{% csrf_token %}
+    <input type="checkbox" onclick="this.form.submit();" name="deactive" {% if deactive %} checked {% endif %}>الأعضاء الغير مفعلين
+</form>
+{% if not deactive%}
+    <form action="/members/" method="get">{% csrf_token %}
+        <select name="since" onchange="this.form.submit();">
+            <option value="" {% if since == 0 %}selected="selected"{% endif %}>عرض الكل...</option>
+            {% for i in loop_times %}
+                <option value="{{ now|add:i }}" {% if since == now|add:i|slugify %}selected="selected"{% endif %}>{{ now|add:i }}</option>
+            {% endfor %}
+            <option value={{ now|add:-11 }} {% if since == now|add:-11|slugify %}selected="selected"{% endif %}>أكثر من عشر سنين</option>
+        </select>
+    </form>
+{% endif %}
 {% if members_list %}
     <table class="table table-hover">
         <thead>
@@ -16,7 +30,9 @@
     		    <th>نوع العضوية</th>
     		    <th>تاريخ العضوية</th>
     		    <th>أخر تعديل</th>
-                <th>الأشتراك السنوى</th>
+                {% if not deactive %}
+                    <th>الأشتراك السنوى</th>
+                {% endif %}
     	    </tr>
         </thead>
         <tbody>
@@ -27,16 +43,18 @@
     	    	<td>{{ member.get_membership_type_display }}</td>
     	    	<td>{{ member.create_date.year }}</td>
     	    	<td>{{ member.modified_date }}</td>
-                <td>
-                    <a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn {% if member.get_last_paid == now %}disabled {% else %}btn-warning{% endif %}">تسديد</a>
-                </td>
+                {% if not deactive %}
+                    <td>
+                        <a href="/members/{{ member.membership_id }}/pay_receipt/" class="btn {% if member.get_last_paid == now %}disabled {% else %}btn-warning{% endif %}">تسديد</a>
+                    </td>
+                {% endif %}
     	    </tr>
     	{% endfor %}
         </tbody>
     </table>
     <div class="pager">
         <span class="{% if not members_list.has_previous %}disabled {% endif %}previous">
-            <a href="?page={{ members_list.previous_page_number }}">السابق &larr;</a>
+            <a href="?page={{ members_list.previous_page_number }}{% if deactive %}&deactive=on{% endif %}{% ifnotequal since 0 %}&since={{ since }}{% endifnotequal %}">السابق &larr;</a>
         </span>
 
         <span class="current">
@@ -44,7 +62,7 @@
         </span>
 
         <span class="{% if not members_list.has_next %}disabled {% endif %}next">
-            <a href="?page={{ members_list.next_page_number }}">التالى</a>
+            <a href="?page={{ members_list.next_page_number }}{% if deactive %}&deactive=on{% endif %}{% ifnotequal since 0 %}&since={{ since }}{% endifnotequal %}">التالى</a>
         </span>
     </div>
 {% else %}
