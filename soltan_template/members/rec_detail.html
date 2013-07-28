@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% block title %}عرض الإيصال{% endblock %}
 {% block extrastyle %}
 	<link href="{% static "css/print.css"%}" rel="stylesheet" media="print">
 {% endblock %}
+{% block content_title %}بيانات الإيصال رقم {{ rec.rec_number }}{% endblock %}
 {% block content %}
 	<table cellpadding="7" class="table-hover" id="printThis">
 		<tbody>

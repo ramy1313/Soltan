@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
+{% block title %}صفحة العضو {{ member.name }}{% endblock %}
 {% block extrastyle %}
 	<link href="{% static "css/print.css"%}" rel="stylesheet" media="print">
 {% endblock %}
@@ -17,6 +18,7 @@
         });
     </script>
 {% endblock %}
+{% block content_title %}بيانات العضو {{ member.name }}{% endblock %}
 {% block content %}
 {% if messages %}
     {% for message in messages %}
@@ -84,6 +86,14 @@
 	    	<tr>
 		    	<td>محل الميلاد</td>
 		    	<td>{{ member.birth_place }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>رقم التليفون</td>
+		    	<td>{{ member.tel }}</td>
+	    	</tr>
+	    	<tr>
+		    	<td>رقم المحمول</td>
+		    	<td>{{ member.mobile }}</td>
 	    	</tr>
 	    	<tr>
 		    	<td>تاريخ أخر سداد</td>

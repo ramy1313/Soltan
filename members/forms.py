@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 from members.models import Member, Receipt, MemberFees
 from django.forms import ModelForm, Form
 from django.forms.fields import TextInput
@@ -27,14 +29,15 @@ class MemberForm(ModelForm):
 
 
 class ReceiptForm(ModelForm):
-	amount = forms.IntegerField(widget=forms.HiddenInput())
+	amount = forms.IntegerField(label = "المبلغ المطلوب", widget=forms.HiddenInput())
 	class Meta:
 		model = Receipt
-		fields = ['member', 'rec_number','number_of_years', 'last_paid_year']
+		fields = ['member', 'rec_number', 'number_of_years', 'last_paid_year']
 
 	def __init__(self, *args, **kwargs):
 		super(ReceiptForm, self).__init__(*args, **kwargs)
 		self.fields['member'].widget = HiddenInput()
+		self.fields['member'].label = "أسم العضو"
 		self.fields['last_paid_year'].widget = HiddenInput()
 		self.fields['number_of_years'].widget = HiddenInput()
 		
@@ -47,7 +50,7 @@ class ReceiptForm(ModelForm):
 		return r
 
 class MemberFeeForm(ModelForm):
-	password = forms.CharField(widget=forms.PasswordInput())
+	password = forms.CharField(label = "رمز المرور", widget=forms.PasswordInput())
 	class Meta:
 		model = MemberFees
 		fields = ['regestration_fee', 'year_fee']
@@ -60,10 +63,10 @@ class MemberFeeForm(ModelForm):
 		return f
 
 class MemberSearchForm(Form):
-	membersearch = forms.IntegerField()
+	membersearch = forms.IntegerField(label = "رقم العضوية")
 
 class RecSearchForm(Form):
-	recsearch = forms.IntegerField()
+	recsearch = forms.IntegerField(label = "رقم الإيصال")
 		
 
 def decorate_label_tag(f):

@@ -1,6 +1,8 @@
 {% extends "base.html" %}
+{% load i18n %}
 {% block title %}رسوم الأشتراك{% endblock %}
 {% block content_title %}رسوم الأشتراك{% endblock %}
+{% block title_desc %}تعديل قيمة رسوم الأشتراك{% endblock %}
 {% block content %}
 <form action="/members/fee/" method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
 	{% for field in form.visible_fields %}

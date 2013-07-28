@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% block title %}جمعية سلطان{% endblock %}
 {% block content %}
 	{% if messages %}
     	{% for message in messages %}
@@ -6,8 +7,8 @@
     	{% endfor %}
 	{% endif %}
 	{% if user.is_authenticated %}
-		<p>Welcome user</p>
-		<a href="/logout/" class="btn">تسجيل خروج</a>
+		<p>مرحبا...</p>
+		<a href="/logout/" class="btn btn-warning">تسجيل خروج</a>
 	{% else %}
 		<form action="/login/" method="post" class="form-horizontal">{% csrf_token %}
 			<div class="control-group">
@@ -22,7 +23,7 @@
 					<input type="password" name="password"/>
 				</div>
 			</div>
-			<input type="submit" value="تسجيل الدخول" />
+			<input class="btn btn-primary" type="submit" value="تسجيل الدخول" />
 		</form>
 	{% endif %}
 {% endblock %}

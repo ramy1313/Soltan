@@ -6,17 +6,17 @@
     </style>
     <link href="{% static "css/print.css"%}" rel="stylesheet" media="print">
 {% endblock %}
-{% block title %}ﺇﺿﺎﻓﺔ ﻋﻀﻮ{% endblock %}
-{% block content_title %}إستمارة عضوية{% endblock %}
-{% block title_desc %}برجاء إضافة البيانات المطلوبة{% endblock %}
-{% block content %}
+{% block title %}تسديد إيصال{% endblock %}
+{% block content_title %}تسديد إيصال{% endblock %}
+{% block title_desc %}تسديد إيصال الأشتراك السنوية{% endblock %}
+{% block content %} 
 <form action="/members/{{ membership_id }}/pay_receipt/" method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
 	{% for hidden in form.hidden_fields %}
         {{ hidden }}
         <div class="control-group">
             {{ hidden.label_tag }} 
             <div class="controls hidden-field">
-                {{ hidden.value }}
+                {{  hidden.value }}
             </div>
         </div>
     {% endfor %}
@@ -32,11 +32,21 @@
 	<input type="submit" value="ﺣﻔﻆ ﻭﻃﺒﺎﻋﺔ" onClick="window.print()"/>
 </form>
 <table id="printThis" cellpadding="7">
+    <tr>
+	<td colspan="2"><h2>جمعية سلطان الخيرية</h2></td>
+    </tr>
+    <tr>
+	<td colspan="4"><h3>إيصال تسديد رسوم سنوية</h3></td>
+    </tr>
     {% for hidden in form.hidden_fields %}
         <tr>
             <td>{{ hidden.label_tag }}</td>
             <td>{{ hidden.value }}</td>
         </tr>
     {% endfor %}
+    <tr>
+	<td>التوقيع:</td>
+	<td></td>
+    </tr>
 </table>
 {% endblock %}

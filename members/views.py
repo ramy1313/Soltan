@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 # Create your views here.
 from django.shortcuts import render_to_response, get_object_or_404, render, redirect
 from members.models import Member, Receipt, MemberFees
@@ -7,14 +9,17 @@ from django.template import RequestContext
 from members.forms import MemberForm, ReceiptForm, MemberFeeForm, MemberSearchForm, RecSearchForm
 from soltan import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.utils import timezone
-from django.contrib.auth import authenticate, login
+from django.utils import timezone, translation
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.db.models import Max
+from django.utils.translation import ugettext as _
+
 
 
 def index(request):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	deactive = False
 	since = 0
@@ -39,19 +44,22 @@ def index(request):
 
 def detail(request, member_id):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	last_paid = m.get_last_paid()
-	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year,})
+	amount = MemberFees.objects.latest('id')
+	return render(request, 'members/detail.html', {'member': m, 'last_paid': last_paid, 'now': timezone.now().year, 'amount': amount})
 
 def add_member(request):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		form = MemberForm(request.POST, request.FILES)
 		if form.is_valid():
 			m = form.save()
-			messages.success(request, 'Profile details updated.', extra_tags = 'printDia')
+			messages.success(request, 'تم أضافة العضو بنجاح', extra_tags = 'printDia')
 			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id,}))
 	else:
 		form = MemberForm()
@@ -61,17 +69,19 @@ def add_member(request):
 
 def edit_member(request, member_id):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST' and 'checkpass' in request.POST:
 		if not request.user.check_password(request.POST['password']):
-			messages.error(request, 'Profile details deactivated.',)
+			messages.error(request, 'عفوا لايمكنك اجراء هذه العملية برجاء تسجيل الدخول مره أخرى',)
+			logout(request)
 			return redirect('/')
 	member_before_edit = get_object_or_404(Member, pk = member_id)
 	if request.method == 'POST' and 'memForm' in request.POST:
 		form = MemberForm(request.POST, request.FILES, instance = member_before_edit)
 		if form.is_valid():
 			m = form.save()
-			messages.success(request, 'Profile details updated.',)
+			messages.success(request, 'تم تعديل البيانات بنجاح',)
 			return HttpResponseRedirect(reverse('members.views.detail', kwargs={'member_id': m.membership_id,}))
 	else:
 		form = MemberForm(instance = member_before_edit)
@@ -83,11 +93,13 @@ def edit_member(request, member_id):
 
 def pay_receipt(request, membership_id):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		form = ReceiptForm(request.POST)
 		if form.is_valid():
 			r = form.save()
+			messages.success(request,'تم سداد الإيصال بنجاح',)
 			return HttpResponseRedirect(reverse('members.views.detail', args=(membership_id,)))
 	else:
 		m = get_object_or_404(Member, pk = membership_id)
@@ -96,7 +108,7 @@ def pay_receipt(request, membership_id):
 			l = timezone.now().year
 		n = timezone.now().year - l
 		amount = n * MemberFees.objects.latest('id').year_fee
-		form = ReceiptForm({'member': membership_id, 'last_paid_year': l, 'number_of_years': n, 'amount': amount})
+		form = ReceiptForm({'member': membership_id, 'last_paid_year': l, 'number_of_years': n, 'amount': amount,})
 	return render(request, 'members/pay_receipt.html', {
         'form': form,
         'membership_id': membership_id,
@@ -104,46 +116,51 @@ def pay_receipt(request, membership_id):
 
 def deactivate(request, member_id):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	m.deactivated = True
 	m.save()
-	messages.success(request, 'Profile details deactivated.',)
+	messages.success(request, 'تمت إيقاف عضوية العضو',)
 	return HttpResponseRedirect(reverse('members.views.detail', args=(member_id,)))
 
 def activate(request, member_id):
 	if request.user.is_anonymous():
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		if not request.user.check_password(request.POST['password']):
-			messages.error(request, 'Profile details deactivated.',)
+			messages.error(request, 'عفوا لايمكنك اجراء هذه العملية برجاء تسجيل الدخول مره أخرى',)
+			logout(request)
 			return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	m.deactivated = False
 	m.save()
-	messages.success(request, 'Profile details activated.',)
+	messages.success(request, 'تم إعادة تفعيل العضو بنجاح',)
 	return HttpResponseRedirect(reverse('members.views.detail', args=(member_id,)))
 
 def delete_member(request, member_id):
 	if request.user.is_anonymous():
-		messages.error(request, 'Profile details deactivated.',)
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		if not request.user.check_password(request.POST['password']):
-			messages.error(request, 'Profile details deactivated.',)
+			messages.error(request, 'عفوا لايمكنك اجراء هذه العملية برجاء تسجيل الدخول مره أخرى',)
+			logout(request)
 			return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	m.delete()
-	messages.success(request, 'deleted.',)
+	messages.success(request, 'تم مسح جميع بيانات العضو بنجاح',)
 	return redirect('/')
 
 def fee(request):
 	if request.user.is_anonymous():
-		messages.error(request, 'Profile details deactivated.',)
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		if not request.user.check_password(request.POST['password']):
-			messages.error(request, 'Profile details deactivated.',)
+			messages.error(request, 'عفوا لايمكنك اجراء هذه العملية برجاء تسجيل الدخول مره أخرى',)
+			logout(request)
 			return redirect('/')
 		form = MemberFeeForm(request.POST)
 		if form.is_valid():
@@ -157,7 +174,7 @@ def fee(request):
 
 def rec_list(request, member_id):
 	if request.user.is_anonymous():
-		messages.error(request, 'Profile details deactivated.',)
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	m = get_object_or_404(Member, pk = member_id)
 	rec_list = m.receipt_set.all()
@@ -174,7 +191,7 @@ def rec_list(request, member_id):
 
 def rec_detail(request, rec_id):
 	if request.user.is_anonymous():
-		messages.error(request, 'Profile details deactivated.',)
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	r = get_object_or_404(Receipt, pk = rec_id)
 	m = get_object_or_404(Member, pk = r.member.membership_id)
@@ -185,11 +202,12 @@ def rec_detail(request, rec_id):
 
 def del_rec(request, rec_id):
 	if request.user.is_anonymous():
-		messages.error(request, 'Profile details deactivated.',)
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		if not request.user.check_password(request.POST['password']):
-			messages.error(request, 'Profile details deactivated.',)
+			messages.error(request, 'عفوا لايمكنك اجراء هذه العملية برجاء تسجيل الدخول مره أخرى',)
+			logout(request)
 			return redirect('/')
 	r = get_object_or_404(Receipt, pk = rec_id)
 	m_id = r.member.membership_id
@@ -199,7 +217,7 @@ def del_rec(request, rec_id):
 
 def q_member_search(request):
 	if request.user.is_anonymous():
-		messages.error(request, 'Profile details deactivated.',)
+		messages.error(request, 'عفوا لايمكن دخول الصفحة إلا إذا كنت مسجل',)
 		return redirect('/')
 	if request.method == 'POST':
 		if request.POST.get('membersearch'):

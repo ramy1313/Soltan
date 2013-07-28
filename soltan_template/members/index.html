@@ -55,7 +55,7 @@
     </table>
     <div class="pager">
         <span class="{% if not members_list.has_previous %}disabled {% endif %}previous">
-            <a href="?page={{ members_list.previous_page_number }}{% if deactive %}&deactive=on{% endif %}{% ifnotequal since 0 %}&since={{ since }}{% endifnotequal %}">السابق &larr;</a>
+            <a href="?page={{ members_list.previous_page_number }}{% if deactive %}&deactive=on{% endif %}{% ifnotequal since 0 %}&since={{ since }}{% endifnotequal %}">&rarr; السابق</a>
         </span>
 
         <span class="current">
@@ -63,7 +63,7 @@
         </span>
 
         <span class="{% if not members_list.has_next %}disabled {% endif %}next">
-            <a href="?page={{ members_list.next_page_number }}{% if deactive %}&deactive=on{% endif %}{% ifnotequal since 0 %}&since={{ since }}{% endifnotequal %}">التالى</a>
+            <a href="?page={{ members_list.next_page_number }}{% if deactive %}&deactive=on{% endif %}{% ifnotequal since 0 %}&since={{ since }}{% endifnotequal %}">التالى &larr;</a>
         </span>
     </div>
 {% else %}

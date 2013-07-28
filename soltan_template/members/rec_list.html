@@ -30,7 +30,7 @@
 		</table>
 		<div class="pager">
         	<span class="{% if not rec_list.has_previous %}disabled {% endif %}previous">
-            	<a href="?page={{ rec_list.previous_page_number }}">السابق &larr;</a>
+            	<a href="?page={{ rec_list.previous_page_number }}">&rarr; السابق</a>
         	</span>
 
         	<span class="current">
@@ -38,11 +38,11 @@
         	</span>
 
         	<span class="{% if not rec_list.has_next %}disabled {% endif %}next">
-            	<a href="?page={{ rec_list.next_page_number }}">التالى</a>
+            	<a href="?page={{ rec_list.next_page_number }}">التالى &larr;</a>
         	</span>
     	</div>
     {% else %}
-    	<p>عفوا لا توجد غيصالات</p>
+    	<p>عفوا لا توجد إيصالات</p>
     {% endif %}
     <a href="/members/{{ m_id }}/" class="btn">العوده إلى صفحة العضو</a>
 {% endblock %}

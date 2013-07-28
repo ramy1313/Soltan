@@ -1,11 +1,14 @@
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="false">
   <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Modal header</h3>
+    <h3></h3>
   </div>
   <div class="modal-body" id="printThis">
-    <table cellpadding="7">
+    <table cellpadding="5">
       <tbody>
+        <tr>
+          <td colspan="4"><h3>جمعية سلطان الخيرية: إستمارة تسجيل عضوية</h3></td>
+        </tr>
         <tr>
           <td>رقم العضوية</td>
           <td>{{ member.membership_id }}</td>
@@ -46,8 +49,11 @@
     </table>
     {% for r in rec %}
       <hr/>
-      <table cellpadding="7">
+      <table cellpadding="5">
         <tbody>
+          <tr>
+            <td colspan="3"><h5>{% ifequal r.rec_type 'P' %}إيصال رسوم تسجيل{% else %}إيصال رسوم إشتراك سنوية{% endifequal %}</h5></td>
+          </tr>
           <tr>
             <td>رقم الإيصال</td>
             <td>{{ r.rec_number }}</td>
@@ -61,6 +67,10 @@
             <td>{{ r.current_date }}</td>
           </tr>
           <tr>
+            <td>القيمة</td>
+            <td>{% ifequal r.rec_type 'P' %}{{ amount.regestration_fee }}{% else %}{{ amount.year_fee }}{% endifequal %} جنية</td>
+          </tr>
+          <tr>
             <td>التوقع:</td>
             <td></td>
           </tr>
@@ -70,7 +80,7 @@
     {% endfor %}
   </div>
   <div class="modal-footer">
-    <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-    <button class="btn btn-primary" onClick="window.print()">Save changes</button>
+    <button class="btn" data-dismiss="modal" aria-hidden="true">إغلاق</button>
+    <button class="btn btn-primary" onClick="window.print()">طباعة</button>
   </div>
 </div>
