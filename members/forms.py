@@ -37,7 +37,7 @@ class ReceiptForm(ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(ReceiptForm, self).__init__(*args, **kwargs)
 		self.fields['member'].widget = HiddenInput()
-		self.fields['member'].label = "أسم العضو"
+		self.fields['member'].label = "رقم العضو"
 		self.fields['last_paid_year'].widget = HiddenInput()
 		self.fields['number_of_years'].widget = HiddenInput()
 		

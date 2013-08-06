@@ -212,7 +212,7 @@ def del_rec(request, rec_id):
 	r = get_object_or_404(Receipt, pk = rec_id)
 	m_id = r.member.membership_id
 	r.delete()
-	messages.success(request, 'deleted.',)
+	messages.success(request, 'تم حذف الإيصال بنجاح',)
 	return HttpResponseRedirect(reverse('members.views.detail', args=(m_id,)))
 
 def q_member_search(request):
