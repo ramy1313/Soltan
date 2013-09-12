@@ -1,8 +1,10 @@
 {% extends "base.html" %}
-{% load i18n adminmedia %}
-{% block extrastyle %}<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />{% endblock %}
+{% load i18n adminmedia staticfiles %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static "css/jquery-ui.css"%}" />
+{% endblock %}
 {% block extrascript %}
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="{% static "js/jquery-ui.js"%}"></script>
     <script>
         $(function() {
             $( ".datePicker" ).datepicker({changeMonth: true, changeYear: true, yearRange: '-100:-10'});

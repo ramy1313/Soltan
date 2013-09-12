@@ -24,7 +24,7 @@ class Person(models.Model):
 		('G', "جيدة"),
 		('E', "مرض مزمن"),
 		('D', "عجز ونسبته"),
-		('O', "أمراض الشيخوخة")
+		('O', "أمراض الشيخوخة"),
 		('H', "إعاقة"),
 		('A', "أخرى"),
 	)
@@ -35,12 +35,12 @@ class Person(models.Model):
 		return str(self.name)
 
 class Cases(models.Model):
-	"""docstring for Cases"""
-	permanent_ID = models.AutoField("الرقم الدائم للحالة", primary_key = True)
-	record_ID = models.IntegerField("الرقم فى السجلات", unique = True, null = True, blank = True)
-	file_number = models.IntegerField("رقم السجل")
-	address = models.CharField("اﻟﻌﻨﻮاﻥ", max_length = 100)
-	tel = models.CharField("اﻟﺘﻠﻴﻔﻮﻥ", max_length = 25, blank = True, validators = [validators.RegexValidator(r'^\+?[0-9]*$', 'يسمح فقط بالأرقام من 0-9 أو +', 'Invalid Number'), validators.MinLengthValidator(7)])
+    """docstring for Cases"""
+    permanent_ID = models.AutoField("الرقم الدائم للحالة", primary_key = True)
+    record_ID = models.IntegerField("الرقم فى السجلات", unique = True, null = True, blank = True)
+    file_number = models.IntegerField("رقم السجل")
+    address = models.CharField("اﻟﻌﻨﻮاﻥ", max_length = 100)
+    tel = models.CharField("اﻟﺘﻠﻴﻔﻮﻥ", max_length = 25, blank = True, validators = [validators.RegexValidator(r'^\+?[0-9]*$', 'يسمح فقط بالأرقام من 0-9 أو +', 'Invalid Number'), validators.MinLengthValidator(7)])
     mobile = models.CharField("ﻣﺤﻤﻮﻝ", max_length = 25, blank = True, validators = [validators.RegexValidator(r'^\+?[0-9]*$', 'يسمح فقط بالأرقام من 0-9 أو +', 'Invalid Number'), validators.MinLengthValidator(7)])
     monthly_income_value = models.FloatField("الدخل الشهرى")
     monthly_income_source = models.CharField("مصدر الدخل الشهرى", max_length = 50)
@@ -84,14 +84,37 @@ class Cases(models.Model):
     	return Person.objects.get(pk = self.case_owner)
 
 class CaseMembers(models.Model):
-	case_id = models.ForeignKey(Cases, verbose_name = "الحالة")
-	person_id = models.ForeignKey(Person, verbose_name = "الشخص")
-	REL = (
-		('P', "زوج/زوجة"),
-		('B', "أبن/أبنه"),
-	)
-	rel = models.CharField("العلاقة", max_length = 1, choices = REL)
+    case_id = models.ForeignKey(Cases, verbose_name = "الحالة")
+    person_id = models.ForeignKey(Person, verbose_name = "الشخص")
+    REL = (
+    	('P', "زوج/زوجة"),
+        ('B', "أبن/أبنه"),
+    )
+    rel = models.CharField("العلاقة", max_length = 1, choices = REL)
+    unregistered = models.BooleanField("حذف من الحالة", default = False)
+    date_of_unvoke = models.DateField("تاريخ حذف العلاقة")
 
-class Payment(models.Model):
-	pass	
+class Disbursements(models.Model):
+    case_id = models.ForeignKey(Cases, verbose_name = "الحالة")
+    child_name = models.CharField("أسم الطفل", max_length = 100)
+    exchange_date = models.DateField("تاريخ الصرف")
+    ITEMS = (
+        ('A', "أعانات مالية"),
+        ('B', "لحوم"),
+        ('C', "كرتونة رمضان"),
+        ('D', "مواد غذائية"),
+        ('E', "ملابس عيد"),
+        ('F', "أحذية"),
+        ('G', "ملابس مدارس"),
+        ('H', "أدوات مدارس"),
+        ('I', "أدوية"),
+        ('J', "أعانات زواج"),
+        ('K', "أعانات تعليم جامعه"),
+    )
+    items = models.CharField("الأصناف المنصرفة", max_length = 1, choices = ITEMS)
+    quantity = models.FloatField("الكمية")
+    notes = models.TextField("ملاحظات")
+
+    def __unicode__(self):
+        return str(self.id)
 
