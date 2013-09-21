@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load i18n adminmedia staticfiles %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static "css/jquery-ui.css"%}" />
+{% endblock %}
+{% block extrascript %}
+    <script src="{% static "js/jquery-ui.js"%}"></script>
+    <script src="{% static "js/cloneMore.js"%}"></script>
+    <script>
+        $(function() {
+            $( ".datePicker" ).datepicker({changeMonth: true, changeYear: true, yearRange: '-100:-10'});
+        });
+        $(document).ready(function(){
+            $('#add_more').click(function() {
+                cloneMore('div.set:last', 'reltive');
+            });
+        });
+    </script>
+{% endblock %}
+{% block extrahead %}{% endblock %}
+{% block title %}إضافة حالة{% endblock %}
+{% block content_title %}حالة جديدة{% endblock %}
+{% block title_desc %}حالة جديدة{% endblock %}
+{% block add_case_nav %}active disabled{% endblock %}
+{% block content %}
+<form action="/cases/{% if edit %}{{ case_id }}/edit_case{% else %}add_case{% endif %}/" method="post" enctype="multipart/form-data" class="form-horizontal">{% csrf_token %}
+	{% for hidden in caseowner.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+	{% for hidden in case.hidden_fields %}
+		{{ hidden }}
+	{% endfor %}
+	{{ reltiveFormset.management_form }}
+	{% for field in caseowner.visible_fields %}
+	    <div class="control-group {%if field.errors%}error{%endif%}">
+        {{ field.label_tag }}
+            <div class="controls">
+                {{field}}
+                <span class="help-inline">{{field.errors}}</span>
+            </div>
+        </div>
+    {% endfor %}
+    <hr/>
+    {% for field in zone.visible_fields %}
+	    <div class="control-group {%if field.errors%}error{%endif%}">
+        {{ field.label_tag }}
+            <div class="controls">
+                {{field}}
+                <span class="help-inline">{{field.errors}}</span>
+            </div>
+        </div>
+    {% endfor %}
+    <hr/>
+    {% for field in case.visible_fields %}
+	    <div class="control-group {%if field.errors%}error{%endif%}">
+        {{ field.label_tag }}
+            <div class="controls">
+                {{field}}
+                <span class="help-inline">{{field.errors}}</span>
+            </div>
+        </div>
+    {% endfor %}
+    {% for form in reltiveFormset.forms %}
+    	{% for hidden in form.hidden_fields %}
+    		{{ hidden }}
+    	{% endfor %}
+        <hr/>
+        <div class="set">
+    	   {% if formset.can_delete %}
+                {{ form.DELETE }}
+           {% endif %}
+    	   {% for field in form.visible_fields %}
+    		  <div class="control-group {%if field.errors%}error{%endif%}">
+    		  {{ field.label_tag }}
+    			 <div class="controls">
+    				    {{ field }}
+    				    <span class="help-inline">{{field.errors}}</span>
+    			 </div>
+    		  </div>
+    	   {% endfor %}
+        </div>
+    {% endfor %}
+    <input type="button" value="Add More" id="add_more">
+	<input type="submit" value={% if edit %}"تعديل الحالة"{% else %}"إضافة حالة"{% endif %} />
+</form>
+{% endblock %}

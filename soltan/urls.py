@@ -25,6 +25,11 @@ urlpatterns = patterns('members.views',
     url(r'^members/(?P<rec_id>\d+)/del_rec/$', 'del_rec'),
 )
 
+urlpatterns += patterns('cases.views',
+    url(r'^cases/(?P<case_id>\d+)/$', 'detail'),
+    url(r'^cases/add_case/$', 'add_case'),
+)
+
 urlpatterns += patterns('',
     # Examples:
     # url(r'^$', 'soltan.views.home', name='home'),

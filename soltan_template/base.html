@@ -33,6 +33,8 @@
 			        <li class="{% block add_member_nav %}{% endblock %}"><a href="/members/add_member/">إضافة عضو</a></li>
 			        <li class="{% block Q_member_search_nav %}{% endblock %}"><a href="/members/Q_member_search/">بحث سريع</a></li>
 			        <li class="divider"></li>
+			        <li class="nav-header">الحالات</li>
+			        <li class="{% block add_case_nav %}{% endblock %}"><a href="/cases/add_case/">حالة جديدة</a></li>
 			        {% if user.is_authenticated %}
 			        <li class="nav-header">انت الان مفعل <br/>
 			        	<a href="/logout/" class="btn btn-danger">تسجيل خروج</a> 

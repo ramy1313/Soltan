@@ -14,7 +14,7 @@ class MemberForm(ModelForm):
 		model = Member
 		fields = ['name', 'membership_id', 'membership_type', 'address', 'national_number', 'job', 'birth_date', 'birth_place', 'tel', 'mobile', 'personal_image']
 		widgets = {
-		'birth_date': forms.DateInput(format='%Y-%m-%d', attrs={'class':'datePicker', 'readonly':'true'}),
+			'birth_date': forms.DateInput(format='%Y-%m-%d', attrs={'class':'datePicker', 'readonly':'true'}),
 		}
 		
 
