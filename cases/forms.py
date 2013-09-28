@@ -3,6 +3,7 @@
 from cases.models import *
 from django.forms import ModelForm, Form, ChoiceField, Select, CharField, DateInput
 from django.forms.forms import BoundField
+from django.forms.formsets import BaseFormSet
 
 
 class MainCaseOwner(ModelForm):
@@ -21,12 +22,13 @@ class CaseForm(ModelForm):
             'case_date': DateInput(format='%Y-%m-%d', attrs={'class':'datePicker', 'readonly':'true'}),
         }
 
-	def save(self, caseowner_id = None, commit = True):
-		c = super(CaseForm, self).save(commit = False)
-		c.case_owner = caseowner_id
-		if commit:
-			c.save()
-		return c
+    def save(self, caseowner_id = None, commit = True):
+        c = super(CaseForm, self).save(commit = False)
+        c.case_owner = caseowner_id
+        if commit:
+            c.save()
+        return c
+
 
 class ZoneForm(Form):
     ZONES = (
@@ -47,13 +49,17 @@ class CaseRelativeForm(MainCaseOwner):
     #rela = ChoiceField("العلاقة", widget = Select(choices = REL))
 
     def save(self, ccase_id = None, relat = None, commit = True):
-    	r = super(CaseRelativeForm, self).save(commit = False)
-    	if commit:
-    		r.save()
-    	relat = self.cleaned_data['rela']
-    	re = CaseMembers(case_id = ccase_id, person_id = r.N_ID, rel = relat)
-    	return r
+        r = super(CaseRelativeForm, self).save(commit = False)
+        if commit:
+            r.save()
+        #relat = self.cleaned_data['rela']
+        re = CaseMembers(case_id = ccase_id, person_id = r, rel = relat)
+        return r
 
+class BaseRelativeFormset(BaseFormSet):
+    def save(self, ccase_id = None, relat = None, commit = True):
+        for form in self.forms:
+            form.save(ccase_id, relat = form.cleaned_data['rela'], commit = commit)
 
 def decorate_label_tag(f):
  
